@@ -5,19 +5,26 @@ export default function DeveloperStore(dataLayer){
         return dataLayer.fetchOne('Developers', {'AppToken': token})
     }
 
-    async function update(candidate) {
-        return dataLayer.update('Developers', candidate.id, 
+    async function update(dev) {
+        return dataLayer.update('Developers', dev.id, 
             {
-                "id": candidate.id,
-                "Email": candidate.Email,
-                "FirstName": candidate.FirstName,
-                "LastName": candidate.LastName,
-                "BirthDate": candidate.BirthDate,
+                "id": dev.id,
+                "Email": dev.Email,
+                "FirstName": dev.FirstName,
+                "LastName": dev.LastName,
+                "BirthDate": dev.BirthDate,
             })
     }
-    
+    async function updateAgent(dev, agent) {
+        return dataLayer.update('Developers', dev.id, 
+            {
+                "Agent": [agent.id],
+            })
+    }
+
     return {
         getByToken,
+        updateAgent,
         update
     }
 }

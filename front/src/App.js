@@ -7,16 +7,31 @@ import Colors from './Theme';
 import Login from './Login';
 import DeveloperStore from './business/DeveloperStore';
 import AirtableHelper from './data/AirtableHelper';
+import SkillStore from './business/SkillStore';
+import AgentStore from './business/AgentStore';
 
 
 function App() {
   console.log('App')
   const [ dev, setDev ] = useState(null)
+  const database = new AirtableHelper('keytoBw0zQgeVS3cb', 'appltRU3GEjhRaQiH')
+  const skillStore = SkillStore(database)
+  const agentStore = AgentStore(database)
+  const devStore = DeveloperStore(database)
+
   useEffect(() => {
     if(localStorage.getItem('app-token')){
-      DeveloperStore(new AirtableHelper('keytoBw0zQgeVS3cb', 'appltRU3GEjhRaQiH')).getByToken(localStorage.getItem('app-token')).then((result) => 
+      devStore.getByToken(localStorage.getItem('app-token')).then(async (dev) => 
         {
-          setDev(result)
+          if(dev.Agent.length === 1){
+            agentStore.getById(dev.Agent[0]).then((result) => {
+              dev.agent = result
+              setDev(dev)
+            })
+          }
+          else{
+            setDev(dev)
+          }
         }
       )
     }
@@ -43,7 +58,7 @@ function App() {
       </header>
       <main>
         <Menu />
-        <Content />
+        <Content skillStore={skillStore} agentStore={agentStore} devStore={devStore} dev={dev} />
       </main>
     </BrowserRouter>
   );
