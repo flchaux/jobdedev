@@ -11,13 +11,27 @@ import interactionPlugin from '@fullcalendar/interaction';
 
 export default (props) => {
     const [choice, setChoice] = useState()
-    if(choice == 'call'){
-    }
-
+    var selectedSlot = null
     function slotSelected(info){
-
+        selectedSlot = info.date
     }
 
+    function validate(){
+        if(selectedSlot){
+            props.calendar.createEvent(selectedSlot).then((result) => {
+                if(result.success){
+                    setChoice(true)
+                }
+            })
+        }
+        else{
+            props.errorManager.setError('Veuillez choisir un créneau dans le calendrier')
+        }
+    }
+
+    if(choice){
+        return <Redirect to="/setup/event" />
+    }
     const googleApiKey = 'AIzaSyCxkt0pE7d9Fym9QB1M7uiF66ApoS2krLA'
     return <Paper style={{width: 600}}>
         <FullCalendar
@@ -31,12 +45,26 @@ export default (props) => {
             slotDuration="01:00:00"
             slotMaxTime="18:00:00"
             slotMinTime="09:00:00"
+            unselectAuto={false}
+            selectMirror={true}
+            selectAllow={(info) => {
+                if(info.end.getHours() - info.start.getHours() >= 2){
+                    return false
+                }
+                return true
+             }}
             locale={frLocale}
+            selectable={true}
             expandRows={true}
             dateClick={slotSelected}
             allDaySlot={false}
-            eventContent={() => 'Occupé'}
+            eventContent={(info) => {
+                if(info.isMirror)
+                    return 'Votre rendez-vous'
+                return 'Occupé'
+            }}
             events={{googleCalendarId: props.dev.agent.Calendar}}
         />
+        <Button onClick={validate}>Choisir ce créneau</Button>
     </Paper>
 }

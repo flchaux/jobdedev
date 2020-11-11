@@ -8,23 +8,35 @@ export default function DeveloperStore(dataLayer){
     async function update(dev) {
         return dataLayer.update('Developers', dev.id, 
             {
-                "id": dev.id,
-                "Email": dev.Email,
                 "FirstName": dev.FirstName,
                 "LastName": dev.LastName,
-                "BirthDate": dev.BirthDate,
             })
     }
+
+    async function updateWish(dev, wishInfo) {
+        return dataLayer.update('Developers', dev.id, 
+            {
+                "JobTitleOptional": [wishInfo.optional.jobTitle.id],
+                "JobTitleRequired": [wishInfo.required.jobTitle.id],
+                "AnnualWageOptional": wishInfo.optional.wage.value,
+                "AnnualWageOptionalComputing": wishInfo.optional.wage.computing,
+                "AnnualWageRequired": wishInfo.required.wage.value,
+                "AnnualWageRequiredComputing": wishInfo.required.wage.computing,
+            })
+    }
+
     async function updateAgent(dev, agent) {
         return dataLayer.update('Developers', dev.id, 
             {
                 "Agent": [agent.id],
             })
+
     }
 
     return {
         getByToken,
         updateAgent,
-        update
+        update,
+        updateWish
     }
 }

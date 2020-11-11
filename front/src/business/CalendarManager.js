@@ -1,4 +1,12 @@
-
+export default function CalendarManager(dataLayer){
+    function createEvent(startDate){
+        return dataLayer.createEvent(startDate)
+    }
+    return {
+        createEvent
+    }
+}
+/*
 function init(apiKey, clientId){
     var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
     var SCOPES = "https://www.googleapis.com/auth/calendar.events";
@@ -20,7 +28,7 @@ function init(apiKey, clientId){
     });
 }
 
- function addEvent(event) {
+ function create(event) {
       var request = gapi.client.calendar.events.insert({
         'calendarId': 'primary',
         'resource': event
@@ -35,4 +43,4 @@ function init(apiKey, clientId){
 export default {
     addEvent, 
     init,
-}
+}*/

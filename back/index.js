@@ -12,6 +12,11 @@ const frontDir = path.join(__dirname, '../front/build');
 //app.use(express.static('../front/build'));
 app.use('/static', express.static(frontDir))
 app.use(bodyParser.json())
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
 app.get('/linkedincallback', (req, res) => {
     linkedincallback.linkedincallback(req, res);

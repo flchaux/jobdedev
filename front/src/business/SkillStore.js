@@ -26,8 +26,8 @@ export default function SkillStore(dataLayer){
         }
         if(!dev || !dev.id){
             throw 'dev-undefined'
-        }
-        if(level > 0 && level <= 5){
+        } 
+        if(level <= 0 || level > 5){
             throw 'level-range'
         }
         return dataLayer.create('DevSkills',

@@ -24,7 +24,6 @@ const addDeveloper = (dev) => {
 }
 
 const fetchEmail = (dev, code, output) => {
-  console.log('fetchEmail start')
   const config = {
     headers: {
       'Authorization': 'Bearer '+code
@@ -34,7 +33,6 @@ const fetchEmail = (dev, code, output) => {
   .get('https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))', config)
   .then((res) => {
     if(res.status >= 200 && res.status < 300){
-      console.log('/v2/emailAddress: '+JSON.stringify(res.data))
       dev.Email = res.data.elements[0]['handle~'].emailAddress
       dev.AppToken = uuid()
       addDeveloper(dev)
@@ -49,7 +47,6 @@ const fetchEmail = (dev, code, output) => {
 }
 
 const fetchProfile = (code, output) => {
-  console.log('fetchProfile start')
   const config = {
     headers: {
       'Authorization': 'Bearer '+code
@@ -58,8 +55,6 @@ const fetchProfile = (code, output) => {
   axios
   .get('https://api.linkedin.com/v2/me', config)
   .then((res) => {
-    console.log(`/v2/me statusCode: ${res.status}`)
-    console.log('/v2/me data: '+JSON.stringify(res.data))
     if(res.status >= 200 && res.status < 300){
       
       const dev = {
@@ -83,7 +78,6 @@ const fetchProfile = (code, output) => {
 
 exports.linkedincallback = (req, output) => {
   
-  console.log(`start`)
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'

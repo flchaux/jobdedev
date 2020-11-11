@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import './Global.css';
 import * as serviceWorker from './serviceWorker';
+import { CssBaseline } from '@material-ui/core';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <React.Fragment>
+    <CssBaseline />
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </React.Fragment>,
   document.getElementById('root')
 );
 

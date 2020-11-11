@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Button, TextField, Snackbar, List, Paper, Container, Grid } from '@material-ui/core';
-import { Rating, Alert } from '@material-ui/lab';
+import { Grid, List, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import React, { useEffect, useState } from 'react';
+import SkillManager from '../../business/SkillManager';
 import SkillForm from './SkillForm';
 import SkillItem from './SkillItem';
 
@@ -19,69 +19,29 @@ const useStyles = makeStyles((theme) => ({
 export default (props) => {
     const [skills, setSkills] = useState([])
     const [skillTypes, setSkillTypes] = useState([])
-    const [error, setError] = useState(undefined)
     const classes = useStyles();
-
+    const [skillManager, setSkillManager] = useState(() => SkillManager(props.skillStore, props.dev))
     useEffect(() => {
-        props.skillStore.getForDeveloper(props.dev).then((results) => setSkills(results))
-        props.skillStore.getSkillTypes().then((results) => setSkillTypes(results))
+        skillManager.fetchSkillTypes().then((results) => setSkillTypes(results))
+        skillManager.fetchSkills().then((results) => setSkills(results))
     },  [])
-    async function addSkill(skillTypeInput, skillLevelInput){
-        if(skillTypeInput.length === 0){
-            setError('Choisis une compétence')
-            return
-        }
-        var skillType = null;
-        skillTypes.forEach(s => {
-            if(s.Name === skillTypeInput){
-                skillType = s;
-            }
-        });
-        if(skillType == null){
-            skillType = (await props.skillStore.addSkillType(skillTypeInput)).result
-        }
-        var hasAlreadySkillType = false;
-        skills.forEach(s => {
-            if(s.Skill == skillType.id){
-                hasAlreadySkillType = true
-            }
-        });
 
-        if(!hasAlreadySkillType){
-            const newSkill = (await props.skillStore.add(props.dev, {id: skillType.id}, skillLevelInput)).result
-            setSkills([...skills, newSkill])
-        }
-        else{
-            setError('Vous avez déjà saisis cette compétence')
-        }
+    function addSkill(skillType, skillLevel){
+        skillManager.addSkill(skillType, skillLevel).then((newSkills) => { 
+            setSkills([...newSkills])
+        }).catch((e) => props.errorManager.setError(e));
     }
-    async function removeSkill(skill){
-        const oldSkills = [...skills];
-        props.skillStore.remove(props.dev, skill).then(result => {
-            console.log(result.success)
-                if(!result.success){
-                    setSkills(oldSkills)
-                }
-            }
-        )
-        const index = skills.indexOf(skill);
-        if (index > -1) {
-            skills.splice(index, 1);
-        }
-        setSkills([...skills])
+    
+    function removeSkill(skill){
+        skillManager.removeSkill(skill).then((newSkills) => setSkills([...newSkills])).catch((e) => props.errorManager.setError(e));
     }
 
     return <div className="page">
-        <Snackbar open={error != undefined ? true : false} autoHideDuration={3000} onClose={() => setError(undefined)}>
-            <Alert severity="error" onClose={() => setError(undefined)}>
-                {error}
-            </Alert>
-        </Snackbar>
         <Grid container spacing={3} className={classes.root}>
             <Grid item xs={6}>
                 <Paper>
                     <h2>Vos compétences</h2>
-                    <SkillForm skillTypes={skillTypes} submit={addSkill} error={error} />
+                    <SkillForm skillTypes={skillTypes} submit={addSkill} />
                     <List dense={true} style={{width: 300}}>
                         {skills.map((skill) =>
                         <SkillItem key={`${skill.id}-${skill.level}`} skill={skill} skillStore={props.skillStore} onRemove={removeSkill} />

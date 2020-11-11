@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, TextField, Snackbar, List, Paper, Container, Grid } from '@material-ui/core';
-import { Rating, Alert } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core/styles';
-import AgentChoiceFrame from '../Agents/AgentChoiceFrame'
-import ErrorAlert from '../../components/ErrorAlert';
-import AgentsList from '../Agents/AgentsList';
 import { Redirect } from 'react-router-dom';
+import AgentsList from '../Agents/AgentsList';
 
 export default (props) => {
     const [agents, setAgents] = useState([])

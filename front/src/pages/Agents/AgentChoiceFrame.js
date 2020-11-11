@@ -9,7 +9,6 @@ export default (props) => {
         padding: 20,
         textAlign: "center"
     }
-    console.log(agent.Description)
     const availabitity = agent.Availabilities === 'Fully' ? 'Très disponible' : 'Assez disponible';
     return <Paper style={style}>
             <h3>{agent.Name}</h3>

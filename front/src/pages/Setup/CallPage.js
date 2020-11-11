@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Button, TextField, Snackbar, List, Paper, Container, Grid } from '@material-ui/core';
-import { Rating, Alert } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core/styles';
+import { Button, Grid, Paper } from '@material-ui/core';
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
 export default (props) => {
@@ -10,7 +8,7 @@ export default (props) => {
         return <Redirect to="/setup/agenda" />
     }
     else if(choice == 'profile'){
-        return <Redirect to="/setup/profile" />
+        return <Redirect to="/profile" />
     }
 
     const style = {textAlign: "center"}
