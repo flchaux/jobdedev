@@ -19,7 +19,6 @@ export default function PriorityStore(dataLayer){
         if(!priority || !priority.id){
             throw 'priority-undefined'
         }
-        console.log(priority)
         return dataLayer.update('DevPriorities', priority.id, 
             {
                 "Rating": priority.Rating,
@@ -37,11 +36,6 @@ export default function PriorityStore(dataLayer){
         if(rating <= 0 || rating > 5){
             throw 'rating-range'
         }
-        console.log({
-            "Developer": [dev.id],
-            "Priority": [priorityType.id],
-            "Rating": rating,
-        })
         const response = await dataLayer.create('DevPriorities',
             {
                 "Developer": [dev.id],

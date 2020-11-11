@@ -7,11 +7,9 @@ import ErrorAlert from '../../components/ErrorAlert';
 
 export default (props) => {
 
-    return <>
-        <Grid direction="row" container spacing={4}>
+    return <Grid style={props.style} direction="row" container spacing={4}>
             {props.agents.map((agent) =>  {
-                return <Grid xs={6} item key={agent.Email}><AgentChoiceFrame agent={agent} change={props.change} /></Grid>
+                return <Grid xs item key={agent.Email}><AgentChoiceFrame agent={agent} change={props.change} /></Grid>
             })}
         </Grid>
-    </>
 }

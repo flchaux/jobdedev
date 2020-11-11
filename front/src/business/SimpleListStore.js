@@ -1,5 +1,5 @@
 
-export default function SimpleListStore(dataLayer, table){
+export default function SimpleListStore(dataLayer, table, readonly = false){
     async function getAll(){
         return dataLayer.fetchAll(table)
     }
@@ -16,6 +16,6 @@ export default function SimpleListStore(dataLayer, table){
 
     return {
         getAll,
-        add
+        ...!readonly && {add:add}
     }
 }

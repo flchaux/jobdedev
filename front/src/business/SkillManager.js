@@ -22,7 +22,6 @@ export default function SkillManager(skillStore, dev) {
         const skillType = await _fetchOrAddSkillType(type)
         if(!_hasAlreadySkillType(skillType)){
             dev.skills.push((await skillStore.add(dev, {id: skillType.id}, level)).result)
-            console.log(dev.skills)
             return dev.skills
         }
         else{
@@ -42,7 +41,6 @@ export default function SkillManager(skillStore, dev) {
 
     function _hasAlreadySkillType(skillType){
         var hasAlreadySkillType = false;
-        console.log(dev.skills)
         dev.skills.forEach(s => {
             if(s.Skill == skillType.id){
                 hasAlreadySkillType = true

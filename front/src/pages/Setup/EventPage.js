@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 export default (props) => {
     const [choice, setChoice] = useState()
     if(choice == 'profile'){
-        return <Redirect to="/profile" />
+        return props.next()
     }
 
     const style = {textAlign: "center"}

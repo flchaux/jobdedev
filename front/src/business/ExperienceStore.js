@@ -30,7 +30,7 @@ export default function ExperienceStore(dataLayer){
             {
                 "Developer": [dev.id],
                 "StartDate": experience.StartDate,
-                "EndDate": experience.EndDate,
+                "EndDate": experience.EndDate ?? null,
                 "Entreprise": experience.Entreprise,
                 "Job": experience.Job,
                 "Description": experience.Description,

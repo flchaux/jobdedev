@@ -95,19 +95,19 @@ export default (props) => {
         dev.priorities[type].Rating = rating;
     }
     if(choice == 'validate'){
-        return <Redirect to="/setup/experiences" />
+        return props.next()
     }
 
-    return <Paper style={{padding:64}}>
+    return <Paper style={{padding:32}}>
+        <h2>Vos attentes</h2>
+        <p>On est avant tout là pour vous aider à obtenir le meilleur pour vous et ça commence évidemment par le poste, le salaire et les attentes légitimes que vous pouvez avoir.</p>
         <Grid container spacing={8} alignContent='center' style={{marginBottom: 32}}>  
             <Grid item sm={6} className={classes.labelCell}>
                 Je recherche avant tout un poste de 
             </Grid>
             <Grid item sm={6} className={classes.valueCell}>
                 <JobTitleInput jobTitles={jobTitles} onChange={(event, value) => {
-                    console.log(value)
                     wish.required.jobTitle = value
-                    console.log(wish)
                  } } value={wish.required.jobTitle} />
             </Grid>
             <Grid item sm={6} className={classes.labelCell}>

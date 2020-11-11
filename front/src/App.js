@@ -15,6 +15,7 @@ import BusinessApi from './data/BusinessApi';
 import { Grid } from '@material-ui/core';
 import PriorityStore from './business/PriorityStore';
 import ExperienceStore from './business/ExperienceStore';
+import TraitStore from './business/TraitStore';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
   const jobTitleStore = JobTitleStore(database)
   const priorityStore = PriorityStore(database)
   const experienceStore = ExperienceStore(database)
+  const traitStore = TraitStore(database)
 
   useEffect(() => {
     if(localStorage.getItem('app-token')){
@@ -90,6 +92,7 @@ function App() {
               agentStore={agentStore} 
               devStore={devStore}
               experienceStore={experienceStore}
+              traitStore={traitStore}
                dev={dev} />
           
           </Grid>

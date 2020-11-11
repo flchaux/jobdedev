@@ -48,7 +48,6 @@ export default function AirtableHelper(apiKey, baseId){
     }
 
     async function fetchOneById(table, id){
-        console.log(id)
         return new Promise(resolve => {
             base(table).find(id, function(err, record) {
                 if (err) { console.error(err); return; }
@@ -69,7 +68,7 @@ export default function AirtableHelper(apiKey, baseId){
                     resolve({success: false, error: err});
                     return;
                 }
-                resolve({success: true, result: data});
+                resolve({success: true, result:  _prepareData(records[0])});
               });
         })
     }
@@ -101,7 +100,6 @@ export default function AirtableHelper(apiKey, baseId){
                     resolve({success: false, error: err})
                     return;
                 }
-                console.log('Deleted', deletedRecords.length, 'records');
                 resolve({success: true, result: deletedRecords});
             });
         })

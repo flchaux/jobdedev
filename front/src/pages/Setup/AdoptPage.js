@@ -1,3 +1,4 @@
+import { Container, Paper } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import AgentsList from '../Agents/AgentsList';
@@ -21,7 +22,13 @@ export default (props) => {
         })
     }
     if(success){
-        return <Redirect to="/setup/call" />
+        return props.next()
     }
-    return <AgentsList change={updateAgent} agents={agents} {...props} />
+    return <Container>
+        <Paper style={{padding: 6, textAlign: 'center'}}>
+            <h2>Choisis ton agent</h2>
+            <p>Ton agent est là pour te trouver le JobDeDev de tes rêves</p>
+        </Paper>
+        <AgentsList style={{marginTop: 12}} change={updateAgent} agents={agents} {...props} />
+        </Container>
 }

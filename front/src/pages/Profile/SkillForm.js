@@ -9,24 +9,30 @@ export default (props) => {
 
     return <form>
         <Grid container justify="center" alignItems="center" spacing={4}>
-            <Autocomplete
-                options={props.skillTypes}
-                getOptionLabel={(option) => option.Name}
-                inputValue={skillType}
-                onInputChange={(event, value) => setSkillType(value)}
-                style={{ width: 250 }}
-                freeSolo={true}
-                renderInput={(params) => <TextField {...params} label="Choisis une compétence" variant="outlined" />}
-            />
-            <Rating
-                name="rating"
-                value={skillLevel}
-                precision={0.5}
-                onChange={(event, newValue) => {
-                    setSkillLevel(newValue);
-                }}
+            <Grid item>
+                <Autocomplete
+                    options={props.skillTypes}
+                    getOptionLabel={(option) => option.Name}
+                    inputValue={skillType}
+                    onInputChange={(event, value) => setSkillType(value)}
+                    style={{ width: 250 }}
+                    freeSolo={true}
+                    renderInput={(params) => <TextField {...params} label="Choisis une compétence" variant="outlined" />}
                 />
-            <Button onClick={() => props.submit(skillType, skillLevel)}>Add Skill</Button>
+            </Grid>
+            <Grid item>
+                <Rating
+                    name="rating"
+                    value={skillLevel}
+                    precision={0.5}
+                    onChange={(event, newValue) => {
+                        setSkillLevel(newValue);
+                    }}
+                    />
+            </Grid>
+            <Grid item>
+                <Button onClick={() => props.submit(skillType, skillLevel)}>Add Skill</Button>
+            </Grid>
         </Grid>
         
     </form>

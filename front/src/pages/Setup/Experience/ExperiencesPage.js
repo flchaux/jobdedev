@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, TextField, IconButton } from '@material-ui/core';
+import { Button, Grid, Paper, TextField, IconButton, Container } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
 import {  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import React, { useEffect, useState, useRef } from 'react';
@@ -7,12 +7,12 @@ import ExperienceItem from './ExperienceItem';
 import AddIcon from '@material-ui/icons/Add'
 import moment from 'moment';
 import ExperienceForm from './ExperienceForm';
+import SkillsWidget from '../SkillsWidget';
 
 export default (props) => {
     const defaultExperience = () => {
         return {  
             StartDate: '',
-            EndDate: '',
             Entreprise: '',
             Job: '',
             Description: '',
@@ -22,14 +22,10 @@ export default (props) => {
     const [experienceToDelete, setExperienceToDelete] = useState()
     const [experienceToEdit, setExperienceToEdit] = useState()
     const [experiences, setExperiences] = useState(() => [])
-    const [newExperience, setNewExperience] = useState(defaultExperience())
-
-    if(choice == ''){
-    }
 
     useEffect(()=> {
         props.experienceStore.getForDeveloper(props.dev).then(experiences => {
-            setExperiences(experiences)
+            refreshExperiences(experiences)
         })
     }, [])
 
@@ -37,13 +33,35 @@ export default (props) => {
     function confirmDelete(experience){
         setExperienceToDelete(experience)
     }
+
+    function refreshExperiences(experiences){
+        setExperiences(experiences.sort((e1, e2) => {
+            if ( e1.StartDate > e2.StartDate ){
+                return -1;
+              }
+              if ( e1.StartDate < e2.StartDate ){
+                return 1;
+              }
+              return 0;
+        }))
+    }
+
     function confirmEdit(experience){
-        props.experienceStore.update(experience).then(experienceUpdated => {
-            const experiencesUpdated = [...experiences]
-            console.log(experienceUpdated)
-            experiencesUpdated[experiences.indexOf(experiences.find((e) => e.id == experience.id))] = experienceUpdated.result
-            setExperiences(experiencesUpdated)
-        })
+        if(experience.id){
+            props.experienceStore.update(experience).then(experienceUpdated => {
+                const experiencesUpdated = [...experiences]
+                experiencesUpdated[experiences.indexOf(experiences.find((e) => e.id == experience.id))] = experienceUpdated.result
+                refreshExperiences(experiencesUpdated)
+            })
+        }
+        else{
+            props.experienceStore.add(props.dev, experience).then((result) => {
+                if(result.success){
+                    refreshExperiences([...experiences, result.result])
+                }
+            })
+        }
+        
         setExperienceToEdit(null)
     }
 
@@ -62,26 +80,24 @@ export default (props) => {
         if (index > -1) {
             experiences.splice(index, 1);
         }
-        setExperiences([...experiences])
+        refreshExperiences([...experiences])
     }
 
     function startEditing(experience){
         setExperienceToEdit(experience)
     }
 
-    function add(){
-        props.experienceStore.add(props.dev, newExperience).then((experience) => {
-            setExperiences([...experiences, experience.result])
-        })
-        setNewExperience(defaultExperience())
+    function startAdding(){
+        setExperienceToEdit(defaultExperience())
     }
 
-    function newValueInputChange(event){
-        const value = {...newExperience }
-        value[event.target.name] = event.target.value
-        setNewExperience(value)
+    function next(){
+        setChoice('next')
     }
 
+    if(choice){
+        return props.next()
+    }
 
     return <>
         <Modal
@@ -92,11 +108,10 @@ export default (props) => {
                 margin: 'auto'
             }} 
             >
-                <Paper style={{
-                padding: 40,}}>
-                    <ExperienceForm experience={experienceToEdit} onSubmit={(experience) => confirmEdit(experience)}/>
-                </Paper>
-            </Modal>
+            <Paper style={{padding: 0}}>
+                <ExperienceForm experience={experienceToEdit} onCancel={cancelEdit} onSubmit={(experience) => confirmEdit(experience)}/>
+            </Paper>
+        </Modal>
         <Dialog
             open={experienceToDelete ? true : false}
             onClose={cancelDelete}
@@ -116,31 +131,24 @@ export default (props) => {
                 </Button>
             </DialogActions>
         </Dialog>
-        <Paper>
-            <p>Saisissez vos expériences : </p>
-            <Grid style={{padding: 30}} container spacing={6}>
-                {experiences.map((experience) => <Grid item xs={3} key={Math.random().toString()}><ExperienceItem experience={experience} onDelete={confirmDelete} onEdit={startEditing} /></Grid>)}
-                <Grid item xs={2}>
-                    <TextField name='StartDate' placeholder="Date de début" type="date" value={newExperience.StartDate} onChange={newValueInputChange} />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField name='EndDate' placeholder="Date de fin" type="date" value={newExperience.EndDate} onChange={newValueInputChange} />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField name='Entreprise' placeholder="Entreprise" value={newExperience.Entreprise} onChange={newValueInputChange} />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField name='Job' placeholder="Nom du poste" value={newExperience.Job} onChange={newValueInputChange} />
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField name='Description' placeholder="Missions et description" value={newExperience.Description} onChange={newValueInputChange} />
-                </Grid>
-                <Grid item xs={2}>
-                    <IconButton color="primary" component="span" onClick={() => add()}>
-                        <AddIcon />
-                    </IconButton>
-                </Grid>
+        <Paper style={{padding: 12, margin: 12}}>
+            <h2>Vos expériences</h2>
+            <Grid style={{padding: 30}} container spacing={6} justify='center'>
+                {
+                    experiences.length > 0 ?
+                        experiences.map((experience) => <Grid item xs={3} key={Math.random().toString()}><ExperienceItem experience={experience} onDelete={confirmDelete} onEdit={startEditing} /></Grid>)
+                        : <p>Vous n'avez pas saisi d'expérience pour le moment</p>
+                }
             </Grid>
+            <Container style={{margin: 'auto', textAlign: 'center'}}>
+                <Button onClick={startAdding}>Ajouter une expérience</Button>
+            </Container>
+        </Paper>
+        <Paper style={{padding: 12, margin: 12}}>
+            <SkillsWidget {...props} />
+        </Paper>
+        <Paper style={{textAlign: 'center', margin: 12}}>
+            <Button onClick={next}>Continuer</Button>
         </Paper>
     </>
 }

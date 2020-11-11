@@ -16,7 +16,6 @@ export default function PriorityManager(priorityStore, dev) {
     }
 
     async function addOrUpdatePriority(priority){
-        priorityTypes.find((t) => console.log(t))
         const priorityType = priorityTypes.find((t) => t.Name == priority.Name)
         if(!priority.id){
             dev.priorities[priorityType.Name] = (await priorityStore.add(dev, {id: priorityType.id}, priority.Rating)).result
@@ -28,8 +27,6 @@ export default function PriorityManager(priorityStore, dev) {
     }
 
     async function updateAll(){
-        console.log(priorityTypes)
-        console.log(dev.priorities)
         for(var priorityName in dev.priorities){
             addOrUpdatePriority(dev.priorities[priorityName])
         }

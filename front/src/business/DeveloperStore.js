@@ -25,6 +25,13 @@ export default function DeveloperStore(dataLayer){
             })
     }
 
+    async function updateTraits(dev, traits){
+        return dataLayer.update('Developers', dev.id, 
+            {
+                "Traits": traits.map(t => t.id)
+            })
+    }
+
     async function updateAgent(dev, agent) {
         return dataLayer.update('Developers', dev.id, 
             {
@@ -37,6 +44,7 @@ export default function DeveloperStore(dataLayer){
         getByToken,
         updateAgent,
         update,
-        updateWish
+        updateWish,
+        updateTraits
     }
 }

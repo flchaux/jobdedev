@@ -11,10 +11,9 @@ export default (props) => {
         props.skillStore.updateLevel(props.skill)
         setLevel(props.skill.Level)
     }
-
     return <ListItem>
         <ListItemAvatar>
-        <Avatar>
+        <Avatar src={props.skill.SkillIcon[0].url}>
         </Avatar>
         </ListItemAvatar>
         <ListItemText
