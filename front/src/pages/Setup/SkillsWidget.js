@@ -43,11 +43,12 @@ export default (props) => {
             </Grid>
             <Grid item>
                 {skills.length > 0 ? 
-                    <List dense={true} style={{width: 300, margin: 'auto'}}>
-                        {skills.map((skill) =>
-                        <SkillItem key={`${skill.id}-${skill.level}`} skill={skill} skillStore={props.skillStore} onRemove={removeSkill} />
+                    <Grid container spacing={4} justify='center'>
+                        {skills.map((skill) => <Grid item container xs={2} sm={3} key={`${skill.id}-${skill.level}`} >
+                                <SkillItem skill={skill} skillStore={props.skillStore} onRemove={removeSkill} />
+                            </Grid>
                         )}
-                    </List>
+                    </Grid>
                 : <p>Vous n'avez pas saisi de compétence pour le moment</p>}
              </Grid>
         </Grid>

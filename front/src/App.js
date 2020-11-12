@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Menu from './Menu';
 import Content from './Content';
 import Loading from './Loading';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, useLocation, Switch, Route } from 'react-router-dom';
 import Colors from './Theme';
 import Login from './Login';
 import DeveloperStore from './business/DeveloperStore';
@@ -16,6 +16,8 @@ import { Grid } from '@material-ui/core';
 import PriorityStore from './business/PriorityStore';
 import ExperienceStore from './business/ExperienceStore';
 import TraitStore from './business/TraitStore';
+import AppLayout from './layout/AppLayout';
+import SetupLayout from './layout/SetupLayout';
 
 
 function App() {
@@ -54,8 +56,24 @@ function App() {
       return Loading();
     }
   }
-  
+
   const api = new BusinessApi('http://localhost:80', dev.AppToken)
+  const content = <Content
+                    style={{
+                      backgroundColor: Colors.neutral,
+                      color: Colors.dark,
+                      padding: 20,
+                    }}
+                    calendar={new CalendarManager(api)} 
+                    priorityStore={priorityStore}
+                    jobTitleStore={jobTitleStore} 
+                    skillStore={skillStore} 
+                    agentStore={agentStore} 
+                    devStore={devStore}
+                    experienceStore={experienceStore}
+                    traitStore={traitStore}
+                    dev={dev} />
+
   return (
     <BrowserRouter>
       <header style={{
@@ -69,36 +87,18 @@ function App() {
         JobDeDev - Bonjour {dev.FirstName} - {dev.Email}
       </header>
       <main>
-        <Grid direction="row" container>
-          <Grid item xs={2}>
-            <Menu style={{
-              listStyle: "none",
-              backgroundColor: Colors.light,
-              padding: 20,
-              margin: 0
-            }} />
-          </Grid>
-          <Grid item xs={10}>
-            <Content
-                style={{
-                  backgroundColor: Colors.neutral,
-                  color: Colors.dark,
-                  padding: 20,
-                }}
-              calendar={new CalendarManager(api)} 
-              priorityStore={priorityStore}
-              jobTitleStore={jobTitleStore} 
-              skillStore={skillStore} 
-              agentStore={agentStore} 
-              devStore={devStore}
-              experienceStore={experienceStore}
-              traitStore={traitStore}
-               dev={dev} />
-          
-          </Grid>
-          
-          
-        </Grid>
+        <Switch>
+          <Route path="/setup">
+            <SetupLayout>
+              {content}
+            </SetupLayout>
+          </Route>
+          <Route path="/">
+            <AppLayout>
+              {content}
+            </AppLayout>
+          </Route>
+        </Switch>
       </main>
     </BrowserRouter>
   );

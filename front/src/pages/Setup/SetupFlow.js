@@ -11,7 +11,6 @@ import FinishPage from './FinishPage';
 
 export default (props)=>{
     function nextStep(choice){
-        console.log(currentStep)
         if(currentStep == -1){
             return <Redirect to='/setup/finish' />
         }
