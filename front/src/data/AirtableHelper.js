@@ -36,7 +36,10 @@ export default function AirtableHelper(apiKey, baseId){
     async function _fetchOne(table, select){
         return new Promise(resolve => {
             base(table).select(select).firstPage(function(err, records) {
+                console.log('_fetchOne')
+                console.log(records)
                 if (err) { console.error(err); return; }
+                if(records.length === 0) { resolve(null); return; }
                 resolve(_prepareData(records[0]));
             });
         })

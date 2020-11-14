@@ -1,12 +1,11 @@
+export default function DeveloperStore(dataLayer) {
 
-export default function DeveloperStore(dataLayer){
-
-    async function getByToken(token){
-        return dataLayer.fetchOne('Developers', {'AppToken': token})
+    async function getByToken(token) {
+        return dataLayer.fetchOne('Developers', { 'AppToken': token })
     }
 
     async function update(dev) {
-        return dataLayer.update('Developers', dev.id, 
+        return dataLayer.update('Developers', dev.id,
             {
                 "FirstName": dev.FirstName,
                 "LastName": dev.LastName,
@@ -14,7 +13,7 @@ export default function DeveloperStore(dataLayer){
     }
 
     async function updateWish(dev, wishInfo) {
-        return dataLayer.update('Developers', dev.id, 
+        return dataLayer.update('Developers', dev.id,
             {
                 "JobTitleOptional": [wishInfo.optional.jobTitle.id],
                 "JobTitleRequired": [wishInfo.required.jobTitle.id],
@@ -25,15 +24,15 @@ export default function DeveloperStore(dataLayer){
             })
     }
 
-    async function updateTraits(dev, traits){
-        return dataLayer.update('Developers', dev.id, 
+    async function updateTraits(dev, traits) {
+        return dataLayer.update('Developers', dev.id,
             {
                 "Traits": traits.map(t => t.id)
             })
     }
 
     async function updateAgent(dev, agent) {
-        return dataLayer.update('Developers', dev.id, 
+        return dataLayer.update('Developers', dev.id,
             {
                 "Agent": [agent.id],
             })

@@ -9,8 +9,7 @@ const eventHandler = require('./eventHandler.js')
 
 const frontDir = path.join(__dirname, '../front/build');
 
-//app.use(express.static('../front/build'));
-app.use('/static', express.static(frontDir))
+app.use('/static', express.static(path.join(frontDir, 'static')))
 app.use(bodyParser.json())
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -26,8 +25,8 @@ app.post('/event', function(req, res){
     eventHandler.handle(req, res)
 })
 
-app.get('/', function(req, res) {
+app.use(function(req, res) {
     res.sendFile(path.join(frontDir, 'index.html'));
-});
+})
 
 app.listen(port)

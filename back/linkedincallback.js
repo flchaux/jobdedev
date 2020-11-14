@@ -8,6 +8,7 @@
 const qs = require('querystring')
 const axios = require('axios')
 const { uuid } = require('uuidv4');
+const { resolve } = require('path');
 
 const redirectSuccessUrl = 'https://jobdedev-qcnpsntiua-ew.a.run.app/'
 
@@ -22,6 +23,37 @@ const addDeveloper = (dev) => {
     }
   }]);
 }
+const updateAppToken = (dev) => {
+  var Airtable = require('airtable');
+  var base = new Airtable({apiKey: 'keytoBw0zQgeVS3cb'}).base('appltRU3GEjhRaQiH');
+
+  return base('Developers').update([
+  {
+    "id": dev.id,
+    "fields": {
+      "AppToken": dev.AppToken
+    }
+  }]);
+}
+
+const fetchDeveloper = async (email) => {
+  return new Promise(resolve => {
+    var Airtable = require('airtable');
+    var base = new Airtable({apiKey: 'keytoBw0zQgeVS3cb'}).base('appltRU3GEjhRaQiH');
+    base('Developers').select({ 
+        filterByFormula: `{Email} = '${email}'`
+    }).firstPage(function(err, records) {
+        if (err) { console.error(err); resolve(null); return; }
+        if(records && records.length > 0){
+          console.log(records[0])
+          resolve(records[0])
+        }
+        else{
+          resolve(null)
+        }
+    });
+  })
+}
 
 const fetchEmail = (dev, code, output) => {
   const config = {
@@ -34,9 +66,17 @@ const fetchEmail = (dev, code, output) => {
   .then((res) => {
     if(res.status >= 200 && res.status < 300){
       dev.Email = res.data.elements[0]['handle~'].emailAddress
-      dev.AppToken = uuid()
-      addDeveloper(dev)
-      output.redirect(redirectSuccessUrl + '?apptoken=' + dev.AppToken)
+      fetchDeveloper(dev.Email).then(result => {
+        dev.AppToken = uuid()
+        if(result){
+          dev.id = result.id
+          updateAppToken(dev)
+        }
+        else{
+          addDeveloper(dev)
+        }
+        output.redirect(redirectSuccessUrl + '?apptoken=' + dev.AppToken)
+      })
     }
   })
   .catch((error) => {

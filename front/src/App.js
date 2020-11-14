@@ -21,7 +21,7 @@ import SetupLayout from './layout/SetupLayout';
 
 
 function App() {
-  const [ dev, setDev ] = useState(null)
+  const [dev, setDev] = useState(null)
   const database = new AirtableHelper('keytoBw0zQgeVS3cb', 'appltRU3GEjhRaQiH')
   const skillStore = SkillStore(database)
   const agentStore = AgentStore(database)
@@ -32,47 +32,61 @@ function App() {
   const traitStore = TraitStore(database)
 
   useEffect(() => {
-    if(localStorage.getItem('app-token')){
-      devStore.getByToken(localStorage.getItem('app-token')).then(async (dev) => 
-        {
-          if(dev.Agent.length === 1){
+    if (localStorage.getItem('app-token')) {
+      devStore.getByToken(localStorage.getItem('app-token')).then(async (dev) => {
+        if (dev) {
+          if (dev.Agent && dev.Agent.length === 1) {
             agentStore.getById(dev.Agent[0]).then((result) => {
               dev.agent = result
               setDev(dev)
             })
           }
-          else{
+          else {
             setDev(dev)
           }
         }
+        else {
+          localStorage.removeItem('app-token')
+        }
+      }
       )
     }
   }, [])
-  if(dev == null){
-    if(!localStorage.getItem('app-token')){
+
+  if (dev == null) {
+    if (!localStorage.getItem('app-token')) {
       return <Login />
     }
-    else{
+    else {
       return Loading();
     }
   }
 
-  const api = new BusinessApi('http://localhost:80', dev.AppToken)
+  var apiUrl;
+  console.log(process.env.NODE_ENV)
+  if (process.env.NODE_ENV == 'production') {
+    apiUrl = window.location.protocol + '//' + window.location.hostname;
+  }
+  else {
+    apiUrl = 'http://localhost:80';
+  }
+
+  const api = new BusinessApi(apiUrl, dev.AppToken)
   const content = <Content
-                    style={{
-                      backgroundColor: Colors.neutral,
-                      color: Colors.dark,
-                      padding: 20,
-                    }}
-                    calendar={new CalendarManager(api)} 
-                    priorityStore={priorityStore}
-                    jobTitleStore={jobTitleStore} 
-                    skillStore={skillStore} 
-                    agentStore={agentStore} 
-                    devStore={devStore}
-                    experienceStore={experienceStore}
-                    traitStore={traitStore}
-                    dev={dev} />
+    style={{
+      backgroundColor: Colors.neutral,
+      color: Colors.dark,
+      padding: 20,
+    }}
+    calendar={new CalendarManager(api)}
+    priorityStore={priorityStore}
+    jobTitleStore={jobTitleStore}
+    skillStore={skillStore}
+    agentStore={agentStore}
+    devStore={devStore}
+    experienceStore={experienceStore}
+    traitStore={traitStore}
+    dev={dev} />
 
   return (
     <BrowserRouter>

@@ -7,7 +7,7 @@ exports.createEvent = async function(calendarId, event) {
             scopes: ['https://www.googleapis.com/auth/cloud-platform', 'https://www.googleapis.com/auth/calendar'],
         });
         const calendar = google.calendar({version: 'v3', auth});
-        var request = calendar.events.insert({
+        calendar.events.insert({
             calendarId: calendarId,
             resource: event
         }).then((result) => {
@@ -18,7 +18,7 @@ exports.createEvent = async function(calendarId, event) {
         })
     })
 }
-
+/*
 exports.listEvents = function(calendarId){
     calendar.events.list({
         calendarId: 's55ruh01m8heu9sgns42qhlaf0@group.calendar.google.com',
@@ -39,3 +39,4 @@ exports.listEvents = function(calendarId){
         }
       });
 }
+*/

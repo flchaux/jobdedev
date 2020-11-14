@@ -23,6 +23,8 @@ RUN cd back && npm install
 # Copy local code to the container image.
 COPY . ./
 
+RUN cd back && ls
+
 RUN cd front && npm run build
 
 EXPOSE 80
