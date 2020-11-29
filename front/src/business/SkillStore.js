@@ -1,34 +1,30 @@
 
-export default function SkillStore(dataLayer){
+export default function SkillStore(dataLayer) {
 
-    async function getForDeveloper(dev){
-        return dataLayer.fetchAll('DevSkills', {'Developer': dev.Email})
-    }
-
-    async function getSkillTypes(){
-        return dataLayer.fetchAll('Skills')
+    async function getForDeveloper(dev) {
+        return dataLayer.fetchAll('DevSkills', { 'Developer': dev.Email })
     }
 
     async function updateLevel(skill) {
-        if(!skill || !skill.id){
-            throw 'skill-undefined'
+        if (!skill || !skill.id) {
+            throw Error('skill-undefined')
         }
-        return dataLayer.update('DevSkills', skill.id, 
+        return dataLayer.update('DevSkills', skill.id,
             {
                 "Level": skill.Level,
             })
     }
 
-    async function add(dev, skillType, level){
+    async function add(dev, skillType, level) {
 
-        if(!skillType || !skillType.id){
-            throw 'skillType-undefined'
+        if (!skillType || !skillType.id) {
+            throw Error('skillType-undefined')
         }
-        if(!dev || !dev.id){
-            throw 'dev-undefined'
-        } 
-        if(level <= 0 || level > 5){
-            throw 'level-range'
+        if (!dev || !dev.id) {
+            throw Error('dev-undefined')
+        }
+        if (level <= 0 || level > 5) {
+            throw Error('level-range')
         }
         return dataLayer.create('DevSkills',
             {
@@ -38,29 +34,17 @@ export default function SkillStore(dataLayer){
             })
     }
 
-    async function remove(dev, skill){
-        if(!skill || !skill.id){
-            throw 'skill-undefined'
+    async function remove(dev, skill) {
+        if (!skill || !skill.id) {
+            throw Error('skill-undefined')
         }
         return dataLayer.destroy('DevSkills', skill.id)
-    }
-
-    async function addSkillType(name){
-        if(!name || name.length === 0){
-            throw 'name-empty'
-        }
-        return dataLayer.create('Skills',
-        {
-            "Name": name
-        })
     }
 
     return {
         getForDeveloper,
         updateLevel,
         add,
-        remove,
-        getSkillTypes,
-        addSkillType,
+        remove
     }
 }

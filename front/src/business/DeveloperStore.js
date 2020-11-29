@@ -1,7 +1,28 @@
 export default function DeveloperStore(dataLayer) {
 
     async function getByToken(token) {
-        return dataLayer.fetchOne('Developers', { 'AppToken': token })
+        const dev = await dataLayer.fetchOne('Developers', { 'AppToken': token })
+        if (!dev.Stack)
+            dev.Stack = []
+        return dev
+    }
+
+    async function addStack(dev, skillType) {
+        dev.Stack.push(skillType.id)
+        await dataLayer.update('Developers', dev.id,
+            {
+                "Stack": dev.Stack
+            })
+        return dev.Stack
+    }
+
+    async function removeStack(dev, skillType) {
+        dev.Stack.splice(dev.Stack.indexOf(skillType.id), 1)
+        await dataLayer.update('Developers', dev.id,
+            {
+                "Stack": dev.Stack
+            })
+        return dev.Stack
     }
 
     async function update(dev) {
@@ -36,7 +57,13 @@ export default function DeveloperStore(dataLayer) {
             {
                 "Agent": [agent.id],
             })
+    }
 
+    async function updateBirthDate(dev, birthDate) {
+        return dataLayer.update('Developers', dev.id,
+            {
+                "BirthDate": birthDate,
+            })
     }
 
     return {
@@ -44,6 +71,9 @@ export default function DeveloperStore(dataLayer) {
         updateAgent,
         update,
         updateWish,
-        updateTraits
+        updateTraits,
+        updateBirthDate,
+        removeStack,
+        addStack
     }
 }

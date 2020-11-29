@@ -1,13 +1,13 @@
 
-export default function ExperienceStore(dataLayer){
+export default function ExperienceStore(dataLayer) {
 
-    async function getForDeveloper(dev){
-        return dataLayer.fetchAll('Experiences', {'Developer': dev.Email})
+    async function getForDeveloper(dev) {
+        return dataLayer.fetchAll('Experiences', { 'Developer': dev.Email })
     }
 
     async function update(experience) {
-        if(!experience || !experience.id){
-            throw 'experience-undefined'
+        if (!experience || !experience.id) {
+            throw Error('experience-undefined')
         }
         return dataLayer.update('Experiences', experience.id, {
             "StartDate": experience.StartDate,
@@ -18,14 +18,14 @@ export default function ExperienceStore(dataLayer){
         })
     }
 
-    async function add(dev, experience){
+    async function add(dev, experience) {
 
-        if(!experience){
-            throw 'experience-undefined'
+        if (!experience) {
+            throw Error('experience-undefined')
         }
-        if(!dev || !dev.id){
-            throw 'dev-undefined'
-        } 
+        if (!dev || !dev.id) {
+            throw Error('dev-undefined')
+        }
         return dataLayer.create('Experiences',
             {
                 "Developer": [dev.id],
@@ -37,9 +37,9 @@ export default function ExperienceStore(dataLayer){
             })
     }
 
-    async function remove(experience){
-        if(!experience || !experience.id){
-            throw 'experience-undefined'
+    async function remove(experience) {
+        if (!experience || !experience.id) {
+            throw Error('experience-undefined')
         }
         return dataLayer.destroy('Experiences', experience.id)
     }

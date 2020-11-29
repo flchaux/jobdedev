@@ -1,8 +1,7 @@
 import React from 'react';
 import MenuItem from './MenuItem';
-import Colors from './Theme';
 
-export default (props) => {
+export default function Menu(props) {
     return <ul {...props}>
         <MenuItem label="Mon profil" href="/profile" />
         <MenuItem label="Ma recherche" href="/job" />

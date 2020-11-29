@@ -1,3 +1,5 @@
 import React from 'react';
 
-export default () => <div>Loading</div>
+export default function Loading() {
+    return <div>Chargement</div>
+}

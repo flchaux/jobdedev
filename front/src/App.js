@@ -1,35 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import Menu from './Menu';
-import Content from './Content';
-import Loading from './Loading';
-import { BrowserRouter, useLocation, Switch, Route } from 'react-router-dom';
-import Colors from './Theme';
-import Login from './Login';
-import DeveloperStore from './business/DeveloperStore';
-import AirtableHelper from './data/AirtableHelper';
-import SkillStore from './business/SkillStore';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import AgentStore from './business/AgentStore';
-import JobTitleStore from './business/JobTitleStore';
 import CalendarManager from './business/CalendarManager';
-import BusinessApi from './data/BusinessApi';
-import { Grid } from '@material-ui/core';
-import PriorityStore from './business/PriorityStore';
+import DeveloperStore from './business/DeveloperStore';
+import EventStore from './business/EventStore';
 import ExperienceStore from './business/ExperienceStore';
+import JobTitleStore from './business/JobTitleStore';
+import PriorityStore from './business/PriorityStore';
+import SkillStore from './business/SkillStore';
+import SkillTypeStore from './business/SkillTypeStore';
 import TraitStore from './business/TraitStore';
-import AppLayout from './layout/AppLayout';
+import AirtableHelper from './data/AirtableHelper';
+import BusinessApi from './data/BusinessApi';
+import Loading from './Loading';
+import Login from './Login';
 import SetupLayout from './layout/SetupLayout';
+import AppLayout from './layout/AppLayout';
+import amplitude from 'amplitude-js'
+import AppController from './AppController';
+import UserContext from './UserContext'
 
 
 function App() {
   const [dev, setDev] = useState(null)
   const database = new AirtableHelper('keytoBw0zQgeVS3cb', 'appltRU3GEjhRaQiH')
-  const skillStore = SkillStore(database)
-  const agentStore = AgentStore(database)
-  const devStore = DeveloperStore(database)
-  const jobTitleStore = JobTitleStore(database)
-  const priorityStore = PriorityStore(database)
-  const experienceStore = ExperienceStore(database)
-  const traitStore = TraitStore(database)
+  const [[skillStore, skillTypeStore, agentStore, devStore, jobTitleStore, priorityStore, experienceStore, traitStore, eventStore]] = useState([
+    SkillStore(database),
+    SkillTypeStore(database),
+    AgentStore(database),
+    DeveloperStore(database),
+    JobTitleStore(database),
+    PriorityStore(database),
+    ExperienceStore(database),
+    TraitStore(database),
+    EventStore(database),
+  ])
 
   useEffect(() => {
     if (localStorage.getItem('app-token')) {
@@ -51,11 +56,17 @@ function App() {
       }
       )
     }
-  }, [])
+  }, [agentStore, devStore])
 
   if (dev == null) {
     if (!localStorage.getItem('app-token')) {
-      return <Login />
+
+      if (process.env.NODE_ENV === 'production') {
+        return <Login />
+      }
+      else {
+        return <h2>Development - Pas de app-token</h2>
+      }
     }
     else {
       return Loading();
@@ -64,57 +75,45 @@ function App() {
 
   var apiUrl;
   console.log(process.env.NODE_ENV)
-  if (process.env.NODE_ENV == 'production') {
+  if (process.env.NODE_ENV === 'production') {
     apiUrl = window.location.protocol + '//' + window.location.hostname;
+    amplitude.getInstance().init("10d0aaa7b9d23f2b4a503903d0e294bb");
   }
   else {
     apiUrl = 'http://localhost:80';
   }
 
-  const api = new BusinessApi(apiUrl, dev.AppToken)
-  const content = <Content
-    style={{
-      backgroundColor: Colors.neutral,
-      color: Colors.dark,
-      padding: 20,
-    }}
-    calendar={new CalendarManager(api)}
-    priorityStore={priorityStore}
-    jobTitleStore={jobTitleStore}
-    skillStore={skillStore}
-    agentStore={agentStore}
-    devStore={devStore}
-    experienceStore={experienceStore}
-    traitStore={traitStore}
-    dev={dev} />
 
+  const api = new BusinessApi(apiUrl, dev.AppToken)
+
+  const businessStores = {
+    calendar: new CalendarManager(api),
+    skillStore,
+    skillTypeStore,
+    priorityStore,
+    jobTitleStore,
+    agentStore,
+    devStore,
+    experienceStore,
+    traitStore,
+    eventStore,
+    dev,
+  }
   return (
-    <BrowserRouter>
-      <header style={{
-        width: '100%',
-        backgroundColor: Colors.primary,
-        color: Colors.neutral,
-        fontSize: '2em',
-        padding: 20,
-        boxSizing: 'border-box',
-      }}>
-        JobDeDev - Bonjour {dev.FirstName} - {dev.Email}
-      </header>
-      <main>
-        <Switch>
-          <Route path="/setup">
-            <SetupLayout>
-              {content}
-            </SetupLayout>
-          </Route>
-          <Route path="/">
-            <AppLayout>
-              {content}
-            </AppLayout>
-          </Route>
-        </Switch>
-      </main>
-    </BrowserRouter>
+    <UserContext.Provider value={dev}>
+      <BrowserRouter>
+        <AppController>
+          <Switch>
+            <Route path="/setup">
+              <SetupLayout {...businessStores} />
+            </Route>
+            <Route path="/">
+              <AppLayout {...businessStores} />
+            </Route>
+          </Switch>
+        </AppController>
+      </BrowserRouter>
+    </UserContext.Provider>
   );
 }
 

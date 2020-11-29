@@ -1,14 +1,13 @@
 import { Button, Grid, Paper } from '@material-ui/core';
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 
-export default (props) => {
+export default function EventPage(props) {
     const [choice, setChoice] = useState()
-    if(choice == 'profile'){
+    if (choice === 'profile') {
         return props.next()
     }
 
-    const style = {textAlign: "center"}
+    const style = { textAlign: "center" }
 
     return <>
         <p>Votre agent va vous appeler à l'horaire souhaité :) Vous pouvez attendre son appel ou continuer de remplir votre profil</p>
@@ -17,7 +16,7 @@ export default (props) => {
                 <Paper>
                     <p></p>
                     <Button onClick={() => setChoice('profile')}>Remplir mon profil</Button>
-                </Paper> 
+                </Paper>
             </Grid>
         </Grid>
     </>

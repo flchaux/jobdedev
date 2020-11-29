@@ -1,9 +1,25 @@
-export default function CalendarManager(dataLayer){
-    function createEvent(startDate){
+import axios from 'axios';
+
+export default function CalendarManager(dataLayer) {
+    function createEvent(startDate) {
         return dataLayer.createEvent(startDate)
     }
+    async function fetchAvailabilities(agent, from, to) {
+        const apiKey = 'AIzaSyCxkt0pE7d9Fym9QB1M7uiF66ApoS2krLA'
+        const response = await axios.post('https://www.googleapis.com/calendar/v3/freeBusy?key=' + apiKey, {
+            "timeMin": from.format(),
+            "timeMax": to.format(),
+            "items": [
+                {
+                    "id": agent.Calendar
+                }
+            ]
+        });
+        return response.data.calendars[agent.Calendar].busy
+    }
     return {
-        createEvent
+        createEvent,
+        fetchAvailabilities
     }
 }
 /*
@@ -33,7 +49,7 @@ function init(apiKey, clientId){
         'calendarId': 'primary',
         'resource': event
       });
-      
+
       request.execute(function(event) {
         appendPre('Event created: ' + event.htmlLink);
       });
@@ -41,6 +57,6 @@ function init(apiKey, clientId){
 
 
 export default {
-    addEvent, 
+    addEvent,
     init,
 }*/
