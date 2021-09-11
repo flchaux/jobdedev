@@ -23,7 +23,7 @@ import UserContext from './UserContext'
 
 function App() {
   const [dev, setDev] = useState(null)
-  const database = new AirtableHelper('keytoBw0zQgeVS3cb', 'appltRU3GEjhRaQiH')
+  const database = new AirtableHelper(process.env.REACT_APP_API_KEY, process.env.REACT_APP_BASE)
   const [[skillStore, skillTypeStore, agentStore, devStore, jobTitleStore, priorityStore, experienceStore, traitStore, eventStore]] = useState([
     SkillStore(database),
     SkillTypeStore(database),
@@ -77,7 +77,7 @@ function App() {
   console.log(process.env.NODE_ENV)
   if (process.env.NODE_ENV === 'production') {
     apiUrl = window.location.protocol + '//' + window.location.hostname;
-    amplitude.getInstance().init("10d0aaa7b9d23f2b4a503903d0e294bb");
+    amplitude.getInstance().init(process.env.REACT_APP_AMPLITUDE);
   }
   else {
     apiUrl = 'http://localhost:80';

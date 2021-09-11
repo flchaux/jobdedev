@@ -5,7 +5,7 @@ export default function CalendarManager(dataLayer) {
         return dataLayer.createEvent(startDate)
     }
     async function fetchAvailabilities(agent, from, to) {
-        const apiKey = 'AIzaSyCxkt0pE7d9Fym9QB1M7uiF66ApoS2krLA'
+        const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
         const response = await axios.post('https://www.googleapis.com/calendar/v3/freeBusy?key=' + apiKey, {
             "timeMin": from.format(),
             "timeMax": to.format(),

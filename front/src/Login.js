@@ -7,6 +7,6 @@ export default function Login() {
         window.location = window.location.protocol + '//' + window.location.host;
     }
     else {
-        window.location = 'https://linkedin-login-test.webflow.io/'
+        window.location = process.env.REACT_APP_WEBSITE
     }
 }

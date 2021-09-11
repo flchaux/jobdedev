@@ -9,7 +9,7 @@ import { Integrations } from "@sentry/tracing";
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
-    dsn: "https://d48ae8f8a29f454a8263e92fed809e07@o478156.ingest.sentry.io/5520251",
+    dsn: process.env.REACT_APP_SENTRY_DSN,
     integrations: [
       new Integrations.BrowserTracing(),
     ],

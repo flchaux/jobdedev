@@ -10,11 +10,11 @@ const axios = require('axios')
 const { uuid } = require('uuidv4');
 const { resolve } = require('path');
 
-const redirectSuccessUrl = 'https://jobdedev-qcnpsntiua-ew.a.run.app/'
+const redirectSuccessUrl = process.env.REACT_APP_URL
 
 const addDeveloper = (dev) => {
   var Airtable = require('airtable');
-  var base = new Airtable({apiKey: 'keytoBw0zQgeVS3cb'}).base('appltRU3GEjhRaQiH');
+  var base = new Airtable({apiKey: process.env.REACT_APP_API_KEY}).base(process.env.REACT_APP_BASE);
 
   base('Developers').create([
   {
@@ -25,7 +25,7 @@ const addDeveloper = (dev) => {
 }
 const updateAppToken = (dev) => {
   var Airtable = require('airtable');
-  var base = new Airtable({apiKey: 'keytoBw0zQgeVS3cb'}).base('appltRU3GEjhRaQiH');
+  var base = new Airtable({apiKey: process.env.REACT_APP_API_KEY}).base(process.env.REACT_APP_BASE);
 
   return base('Developers').update([
   {
@@ -39,7 +39,7 @@ const updateAppToken = (dev) => {
 const fetchDeveloper = async (email) => {
   return new Promise(resolve => {
     var Airtable = require('airtable');
-    var base = new Airtable({apiKey: 'keytoBw0zQgeVS3cb'}).base('appltRU3GEjhRaQiH');
+    var base = new Airtable({apiKey: process.env.REACT_APP_API_KEY}).base(process.env.REACT_APP_BASE);
     base('Developers').select({ 
         filterByFormula: `{Email} = '${email}'`
     }).firstPage(function(err, records) {
@@ -126,9 +126,9 @@ exports.linkedincallback = (req, output) => {
   const postData = qs.stringify({
     grant_type: 'authorization_code',
     code: req.query.code,
-    redirect_uri: "https://jobdedev-qcnpsntiua-ew.a.run.app/linkedincallback",
-    client_id: "77jpv5n3wsxtq5",
-    client_secret: "rEQfCwHSn2dqFu13"
+    redirect_uri: process.env.REACT_APP_URL + "/linkedincallback",
+    client_id: process.env.REACT_APP_LINKEDIN_ID,
+    client_secret: process.env.REACT_APP_LINKEDIN_SECRET
   })
   console.log(`post: ${postData}`)
   axios
